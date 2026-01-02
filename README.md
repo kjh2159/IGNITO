@@ -79,7 +79,8 @@ Inference Governed by Nested lazy Ignition for Thermal Efficiency
 | Our workstation* | amd64  | Intel       | Linux   |
 
 > \* Linux device (our workstation) is tested for only response generation not ignite. <br>
-> ⚠️ The issue that Galaxy S25 does not accept rooting is recently found. 
+> ⚠️ The issue that Galaxy S25 does not accept rooting is recently found.
+> ⚠️ Basically, the target mobile devices should support RAM DVFS.
 
 </details>
 
