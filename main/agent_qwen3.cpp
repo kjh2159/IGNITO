@@ -207,6 +207,11 @@ int main(int argc, char **argv) {
     // DVFS setting
     DVFS dvfs(device_name);
     dvfs.output_filename = output_hard; // dvfs.output_filename requires hardware recording output path
+    if (dvfs.init_fd_cache() != 0) {
+        fprintf(stderr, "FD cache initialization failed. Are you root or authorized?\n");
+    }
+
+
     cout << pid << "\r\n";
     vector<int> freq_config = dvfs.get_cpu_freqs_conf(start_cpu_clk_idx);
     for (auto f : freq_config) { cout << f << " "; }
