@@ -40,6 +40,15 @@ if (dvfs.init_fd_cache() != 0) {
     fprintf(stderr, "FD cache initialization failed. Are you root or authorized?\n");
 }
 
+... (skip) ...
+
+std::vector<int> freq_config = dvfs.get_cpu_freqs_conf(prime_cpu_index);
+dvfs.set_cpu_freq(freq_config);
+dvfs.set_ram_freq(ram_freq_index);
+... (skip) ...
+dvfs.unset_cpu_freq();
+dvfs.unset_ram_freq();
+
 */
 class DVFS : public Device {
 private:
