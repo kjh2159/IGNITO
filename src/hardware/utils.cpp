@@ -112,3 +112,104 @@ std::string apply_sudo_and_get(std::string command = "") {
     return cmd;
 }
 // -------------------------------------------
+
+const bool init_ignite_filename(ignite_params& _ip){
+    // variable initialization: For File Naming
+    bool fixed_config = (_ip.cpu_clk_idx_p == _ip.cpu_clk_idx_d) && (_ip.ram_clk_idx_p == _ip.ram_clk_idx_d);
+    bool tp = (_ip.token_pause > 0);
+    bool pp = (_ip.phase_pause > 0);
+    bool lp = (_ip.layer_pause > 0);
+    bool qi = (_ip.query_interval > 0);
+    char mode = 0b00000000; // 1byte
+
+    // 0-th bit: clock control
+    // 1-st bit: phase-pause
+    // 2-nd bit: layer-pause
+    // 3-rd bit: token-pause
+    // 4-th bit: query-interval
+    // ex) 0b0101 : clock config control + layer pause
+    //     3 <-> 0
+
+    // [control mode checker]
+    mode |= (!fixed_config) ? (1 << 0) : 0;
+    mode |= pp ? (1 << 1) : 0;
+    mode |= lp ? (1 << 2) : 0;
+    mode |= tp ? (1 << 3) : 0;
+    mode |= qi ? (1 << 4) : 0;
+
+    std::string output_hard;
+    std::string output_infer;
+    switch (mode) {
+    case 0:
+        // Fixed Config
+        output_hard = joinPaths(_ip.output_dir, "HotpotQA_mllm_Qwen3_" + _ip.model_billion + "_" + std::to_string(_ip.cpu_clk_idx_p) + "-" + std::to_string(_ip.ram_clk_idx_p) + "_hard.txt");
+        output_infer = joinPaths(_ip.output_dir, "HotpotQA_mllm_Qwen3_" + _ip.model_billion + "_" + std::to_string(_ip.cpu_clk_idx_p) + "-" + std::to_string(_ip.ram_clk_idx_p) + "_infer.txt");
+        break;
+    case 1:
+        // Only Config Control
+        output_hard = joinPaths(_ip.output_dir, "HotpotQA_mllm_Qwen3_" + _ip.model_billion + "_" + std::to_string(_ip.cpu_clk_idx_p) + "-" + std::to_string(_ip.ram_clk_idx_p) + "_to_" + std::to_string(_ip.cpu_clk_idx_d) + "-" + std::to_string(_ip.ram_clk_idx_d) + "_hard.txt");
+        output_infer = joinPaths(_ip.output_dir, "HotpotQA_mllm_Qwen3_" + _ip.model_billion + "_" + std::to_string(_ip.cpu_clk_idx_p) + "-" + std::to_string(_ip.ram_clk_idx_p) + "_to_" + std::to_string(_ip.cpu_clk_idx_d) + "-" + std::to_string(_ip.ram_clk_idx_d) + "_infer.txt");
+        break;
+    case 2:
+        // Only Phase Pause
+        output_hard = joinPaths(_ip.output_dir, "HotpotQA_mllm_Qwen3_" + _ip.model_billion + "_" + std::to_string(_ip.cpu_clk_idx_p) + "-" + std::to_string(_ip.ram_clk_idx_p) + "_pp_" + std::to_string(_ip.phase_pause) + "_hard.txt");
+        output_infer = joinPaths(_ip.output_dir, "HotpotQA_mllm_Qwen3_" + _ip.model_billion + "_" + std::to_string(_ip.cpu_clk_idx_p) + "-" + std::to_string(_ip.ram_clk_idx_p) + "_pp_" + std::to_string(_ip.phase_pause) + "_infer.txt");
+        break;
+    case 4:
+        // Only Layer Pause
+        output_hard = joinPaths(_ip.output_dir, "HotpotQA_mllm_Qwen3_" + _ip.model_billion + "_" + std::to_string(_ip.cpu_clk_idx_p) + "-" + std::to_string(_ip.ram_clk_idx_p) + "_lp_" + std::to_string(_ip.layer_pause) + "_hard.txt");
+        output_infer = joinPaths(_ip.output_dir, "HotpotQA_mllm_Qwen3_" + _ip.model_billion + "_" + std::to_string(_ip.cpu_clk_idx_p) + "-" + std::to_string(_ip.ram_clk_idx_p) + "_lp_" + std::to_string(_ip.layer_pause) + "_infer.txt");
+        break;
+    case 5:
+        // Config Control + Layer Pause
+        output_hard = joinPaths(_ip.output_dir, "HotpotQA_mllm_Qwen3_" + _ip.model_billion + "_" + std::to_string(_ip.cpu_clk_idx_p) + "-" + std::to_string(_ip.ram_clk_idx_p) + "_to_" + std::to_string(_ip.cpu_clk_idx_d) + "-" + std::to_string(_ip.ram_clk_idx_d) + "_lp_" + std::to_string(_ip.layer_pause) + "_hard.txt");
+        output_infer = joinPaths(_ip.output_dir, "HotpotQA_mllm_Qwen3_" + _ip.model_billion + "_" + std::to_string(_ip.cpu_clk_idx_p) + "-" + std::to_string(_ip.ram_clk_idx_p) + "_to_" + std::to_string(_ip.cpu_clk_idx_d) + "-" + std::to_string(_ip.ram_clk_idx_d) + "_lp_" + std::to_string(_ip.layer_pause) + "_infer.txt");
+        break;
+    case 8:
+        // Only Token Pause
+        output_hard = joinPaths(_ip.output_dir, "HotpotQA_mllm_Qwen3_" + _ip.model_billion + "_" + std::to_string(_ip.cpu_clk_idx_p) + "-" + std::to_string(_ip.ram_clk_idx_p) + "_tp_" + std::to_string(_ip.token_pause) + "_hard.txt");
+        output_infer = joinPaths(_ip.output_dir, "HotpotQA_mllm_Qwen3_" + _ip.model_billion + "_" + std::to_string(_ip.cpu_clk_idx_p) + "-" + std::to_string(_ip.ram_clk_idx_p) + "_tp_" + std::to_string(_ip.token_pause) + "_infer.txt");
+        break;
+    case 16:
+        // Only query interval
+        output_hard = joinPaths(_ip.output_dir, "HotpotQA_mllm_Qwen3_" + _ip.model_billion + "_" + std::to_string(_ip.cpu_clk_idx_p) + "-" + std::to_string(_ip.ram_clk_idx_p) + "_qi_" + std::to_string(_ip.query_interval) + "_hard.txt");
+        output_infer = joinPaths(_ip.output_dir, "HotpotQA_mllm_Qwen3_" + _ip.model_billion + "_" + std::to_string(_ip.cpu_clk_idx_p) + "-" + std::to_string(_ip.ram_clk_idx_p) + "_qi_" + std::to_string(_ip.query_interval) + "_infer.txt");
+        break;
+    case 17:
+        // Config Control + Query Interval
+        output_hard = joinPaths(_ip.output_dir, "HotpotQA_mllm_Qwen3_" + _ip.model_billion + "_" + std::to_string(_ip.cpu_clk_idx_p) + "-" + std::to_string(_ip.ram_clk_idx_p) + "_to_" + std::to_string(_ip.cpu_clk_idx_d) + "-" + std::to_string(_ip.ram_clk_idx_d) + "_qi_" + std::to_string(_ip.query_interval) + "_hard.txt");
+        output_infer = joinPaths(_ip.output_dir, "HotpotQA_mllm_Qwen3_" + _ip.model_billion + "_" + std::to_string(_ip.cpu_clk_idx_p) + "-" + std::to_string(_ip.ram_clk_idx_p) + "_to_" + std::to_string(_ip.cpu_clk_idx_d) + "-" + std::to_string(_ip.ram_clk_idx_d) + "_qi_" + std::to_string(_ip.query_interval) + "_infer.txt");
+        break;
+    case 20:
+        // Layer Pause + Query Interval
+        output_hard = joinPaths(_ip.output_dir, "HotpotQA_mllm_Qwen3_" + _ip.model_billion + "_" + std::to_string(_ip.cpu_clk_idx_p) + "-" + std::to_string(_ip.ram_clk_idx_p) + "_lp_" + std::to_string(_ip.layer_pause) + "_qi_" + std::to_string(_ip.query_interval) + "_hard.txt");
+        output_infer = joinPaths(_ip.output_dir, "HotpotQA_mllm_Qwen3_" + _ip.model_billion + "_" + std::to_string(_ip.cpu_clk_idx_p) + "-" + std::to_string(_ip.ram_clk_idx_p) + "_lp_" + std::to_string(_ip.layer_pause) + "_qi_" + std::to_string(_ip.query_interval) + "_infer.txt");
+        break;
+    case 21:
+        // Config Control + Layer Pause + Query Interval
+        output_hard = joinPaths(_ip.output_dir, "HotpotQA_mllm_Qwen3_" + _ip.model_billion + "_" + std::to_string(_ip.cpu_clk_idx_p) + "-" + std::to_string(_ip.ram_clk_idx_p) + "_to_" + std::to_string(_ip.cpu_clk_idx_d) + "-" + std::to_string(_ip.ram_clk_idx_d) + "_lp_" + std::to_string(_ip.layer_pause) + "_qi_" + std::to_string(_ip.query_interval) + "_hard.txt");
+        output_infer = joinPaths(_ip.output_dir, "HotpotQA_mllm_Qwen3_" + _ip.model_billion + "_" + std::to_string(_ip.cpu_clk_idx_p) + "-" + std::to_string(_ip.ram_clk_idx_p) + "_to_" + std::to_string(_ip.cpu_clk_idx_d) + "-" + std::to_string(_ip.ram_clk_idx_d) + "_lp_" + std::to_string(_ip.layer_pause) + "_qi_" + std::to_string(_ip.query_interval) + "_infer.txt");
+        break;
+    
+    case 3:  // Config Control + Phase Pause
+    case 6:  // Phase Pause + Layer Pause
+    case 7:  // Config Control + Pase Pause + Layer Pause
+    case 9:  // Config Control + Token Pause
+    case 10: // Phase Pause + Token Pause
+    case 11: // Config Control + Phase Pause + Token Pause
+    case 12: // Layer Pause + Token Pause
+    case 13: // Config Control + Layer Pause + Token Pause
+    case 14: // Phase Pause + Layer Pause + Token Pause
+    case 15: // Config Control + Phase Pause + Layer Pause + Token Pause
+    default:
+        // Not controlled cases
+        std::cerr << "[ERROR] Not Controlled Configuration\n";
+        return false;
+    }
+
+    _ip.fixed_config = fixed_config;
+    _ip.output_path_hard = output_hard;
+    _ip.output_path_infer = output_infer;
+
+    return true;
+}

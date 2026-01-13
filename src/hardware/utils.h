@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <string>
+#include "common/common.h"
 
 std::vector<std::string> parseCSVLine(const std::string& line);
 std::vector<std::vector<std::string>> readCSV(const std::string& filename);
@@ -15,5 +16,8 @@ std::string execute_cmd(const char* cmd);
 
 // throttling detection support
 std::string apply_sudo_and_get(std::string command);
+
+struct ignite_params;
+const bool init_ignite_filename(ignite_params& _ip);
 
 #endif // HARD_UTILS_H

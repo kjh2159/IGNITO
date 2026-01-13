@@ -79,8 +79,8 @@ public:
     std::string output_filename;
 
 public:
-    explicit DVFS(const std::string& device_name);
-    explicit ~DVFS();
+    DVFS(const std::string& device_name);
+    ~DVFS();
 
     const std::map<int, std::vector<int>>& get_cpu_freq() const;
     const std::vector<int>& get_ddr_freq() const;

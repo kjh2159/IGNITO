@@ -7,6 +7,38 @@
 #include <string>
 
 struct ignite_params {
+    // basic model configs
+    std::string vocab_path = "";
+    std::string merge_path = "";
+    std::string model_path = "";
+    std::string model_billion = "";
+    std::string model_family = "";
+    int tokens_limit = 0;
+    bool strict_limit = false;
+    bool enable_thinking = false;
+    
+    // basic measure configs
+    std::string input_path = ""; // path = dir/file.ext
+    std::string output_dir = "";
+    std::string output_path_hard = "";
+    std::string output_path_infer = "";
+    
+    // if needed for CPU/RAM DVFS on static ignite
+    int cpu_clk_idx_p = 0; // prefill + cpu
+    int ram_clk_idx_p = 0; // prefill + ram
+    int cpu_clk_idx_d = 0; // decode + cpu
+    int ram_clk_idx_d = 0; // decode + ram
+    bool fixed_config = false;
+
+    // llm plane
+    int phase_pause = 0; // ms
+    int token_pause = 0; // ms
+    int layer_pause = 0; // ms
+    int query_interval = 0; // ms
+    bool prefill_phase = true; // prefill phase or not
+    double prefill_speed = 0.0; // tokens/s
+    double decode_speed = 0.0; // tokens/s
+
     // resource plane
     double time_slot = 0.5; // s
     double temp_threshold = 80.0; // Celsius
@@ -17,15 +49,6 @@ struct ignite_params {
     int cur_cpu_clk_idx = 0; // dynamic
     int max_ram_clk_idx = 0; // fixed by device
     int cur_ram_clk_idx = 0; // dynamic
-
-    // llm plane
-    int phase_pause = 0; // ms
-    int token_pause = 0; // ms
-    int layer_pause = 0; // ms
-    int query_interval = 0; // ms
-    bool prefill_phase = true; // prefill phase or not
-    double prefill_speed = 0.0; // tokens/s
-    double decode_speed = 0.0; // tokens/s
 };
 
 #endif // COMMON_H
