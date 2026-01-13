@@ -106,9 +106,9 @@ int main(int argc, char **argv) {
     string output_qa;
 
     // variable initialization: For Pause Techniques
-    _params.token_pause = cmdParser.get<int>("token-pause"); int token_pause = _params.token_pause;
-    _params.phase_pause = cmdParser.get<int>("phase-pause"); int phase_pause = _params.phase_pause;
-    _params.layer_pause = cmdParser.get<int>("layer-pause"); int layer_pause = _params.layer_pause;
+    _params.token_pause = cmdParser.get<int>("token-pause");
+    _params.phase_pause = cmdParser.get<int>("phase-pause");
+    _params.layer_pause = cmdParser.get<int>("layer-pause");
     _params.query_interval = cmdParser.get<int>("query-interval") * 1000; int query_interval = _params.query_interval;
 
     // file path initialization
