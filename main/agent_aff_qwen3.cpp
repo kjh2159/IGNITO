@@ -119,14 +119,15 @@ int main(int argc, char **argv) {
     cmdParser.parse_check(argc, argv);
 
     // variable initialization: BASIC
-    string vocab_path = cmdParser.get<string>("vocab");
-    string merge_path = cmdParser.get<string>("merge");
-    string model_path = cmdParser.get<string>("model");
-    string model_billion = cmdParser.get<string>("billion");
-    int tokens_limit = cmdParser.get<int>("limits");
+    _params.vocab_path = cmdParser.get<string>("vocab");
+    _params.merge_path = cmdParser.get<string>("merge");
+    _params.model_path = cmdParser.get<string>("model");
+    _params.model_billion = cmdParser.get<string>("billion");
+    _params.tokens_limit = cmdParser.get<int>("limits");
     CPUBackend::cpu_threads = cmdParser.get<int>("thread");
-    bool strict_limit = cmdParser.get<bool>("strict");
-    const bool enable_thinking = cmdParser.get<bool>("thinking");
+    _params.strict_limit = cmdParser.get<bool>("strict");
+    _params.enable_thinking = cmdParser.get<bool>("thinking");
+
 
     // variable initialization: For DVFS
     const string device_name = cmdParser.get<string>("device");
@@ -137,49 +138,45 @@ int main(int argc, char **argv) {
     const bool interface = cmdParser.get<bool>("interface");
     const int qa_start = cmdParser.get<int>("start");
     const int qa_len = cmdParser.get<int>("length");
-    const string input_path = cmdParser.get<string>("input");
-    const string output_dir = cmdParser.get<string>("output"); //"HotpotQA_mllm_result_Qwen"+model_billion+".json";
     const bool is_query_save = cmdParser.get<bool>("save");
+    _params.input_path = cmdParser.get<string>("input");
+    _params.output_dir = cmdParser.get<string>("output");
     int qa_now = qa_start;
     int qa_limit = 0;
-    string output_hard;
-    string output_infer;
     string output_qa;
 
     // variable initialization: For Pause Techniques
-    _params.token_pause = cmdParser.get<int>("token-pause"); int token_pause = _params.token_pause;
-    _params.phase_pause = cmdParser.get<int>("phase-pause"); int phase_pause = _params.phase_pause;
-    _params.layer_pause = cmdParser.get<int>("layer-pause"); int layer_pause = _params.layer_pause;
-    _params.query_interval = cmdParser.get<int>("query-interval") * 1000; int query_interval = _params.query_interval;
+    _params.token_pause = cmdParser.get<int>("token-pause");
+    _params.phase_pause = cmdParser.get<int>("phase-pause");
+    _params.layer_pause = cmdParser.get<int>("layer-pause");
+    _params.query_interval = cmdParser.get<int>("query-interval") * 1000;
 
     // variable initialization: For File Naming
-    output_hard = joinPaths(output_dir, "HotpotQA_mllm_Qwen3_" + model_billion + "_" + to_string(start_cpu_clk_idx) + "-" + to_string(start_ram_clk_idx) + "_resource_agent_hard.txt");
-    output_infer = joinPaths(output_dir, "HotpotQA_mllm_Qwen3_" + model_billion + "_" + to_string(start_cpu_clk_idx) + "-" + to_string(start_ram_clk_idx) + "_resource_agent_infer.txt");
-    output_qa = joinPaths(output_dir, "HotpotQA_mllm_Qwen3_" + model_billion + "_result.json");
+    output_hard = joinPaths(_params.output_dir, "HotpotQA_mllm_Qwen3_" + _params.model_billion + "_" + to_string(start_cpu_clk_idx) + "-" + to_string(start_ram_clk_idx) + "_resource_agent_hard.txt");
+    output_infer = joinPaths(_params.output_dir, "HotpotQA_mllm_Qwen3_" + _params.model_billion + "_" + to_string(start_cpu_clk_idx) + "-" + to_string(start_ram_clk_idx) + "_resource_agent_infer.txt");
+    output_qa = joinPaths(_params.output_dir, "HotpotQA_mllm_Qwen3_" + _params.model_billion + "_result.json");
 
     // variable initialization: For Thermal Throttling Detection
-    std::string command = "su -c \"";                                                            // prefix
-    command += "awk '{print \\$1/1000}' /sys/devices/system/cpu/cpu7/cpufreq/scaling_cur_freq;"; // command
-    command += "\"";                                                                             // postfix
+    std::string command = apply_sudo_and_get(""); // this function get the command of cpu clock
 
     // Model Configuration
-    auto tokenizer = QWen3Tokenizer(vocab_path, merge_path, false, enable_thinking);
+    auto tokenizer = QWen3Tokenizer(_params.vocab_path, _params.merge_path, false, _params.enable_thinking);
     QWen3Config config(
-        strict_limit ? tokens_limit + 8192 : tokens_limit, 
-        model_billion, RoPEType::HFHUBROPE);
+        _params.strict_limit ? _params.tokens_limit + 8192 : _params.tokens_limit, 
+        _params.model_billion, RoPEType::HFHUBROPE);
     auto model = QWen3ForCausalLM(config);
-    model.load(model_path);
+    model.load(_params.model_path);
     model.init_ignite_params(_params);  // for this, must turn on "IGNITE_USE_SYSTEM" option when building MLLM
                                         // see scripts/build.sh
-    Module::thread_sleep = layer_pause; // set layer-pause time
+    Module::thread_sleep = _params.layer_pause; // set layer-pause time
 
     // QA Dataset Load
-    vector<vector<string>> qa_list = readCSV(input_path); // qa load
+    vector<vector<string>> qa_list = readCSV(_params.input_path); // qa load
     vector<string> ans;                                   // qa load
 
     // DVFS setting
     DVFS dvfs(device_name);
-    dvfs.output_filename = output_hard; // dvfs.output_filename requires hardware recording output path
+    dvfs.output_filename = _params.output_path_hard; // dvfs.output_filename requires hardware recording output path
     if (dvfs.init_fd_cache() != 0) {
         fprintf(stderr, "FD cache initialization failed. Are you root or authorized?\n");
     }
@@ -199,7 +196,7 @@ int main(int argc, char **argv) {
 
     // inference recording contents
     const vector<string> infer_record_names = {"sys_time", "load_time", "prefill_speed", "decode_speed", "prefill_token", "decode_token", "ttft"};
-    write_file(infer_record_names, output_infer);
+    write_file(infer_record_names, _params.output_path_infer);
 
     // limit=-1 -> infinite query stream
     if (qa_len == -1) {
@@ -216,7 +213,7 @@ int main(int argc, char **argv) {
 
     // measurement start
     auto start_sys_time = chrono::system_clock::now();
-    std::thread record_thread = std::thread(record_hard, std::ref(sigterm), dvfs);
+    std::thread record_thread = std::thread(record_hard, std::ref(sigterm), std::ref(dvfs));
 
     // Start DVFS setting is only meaningful in this agent case
     freq_config = dvfs.get_cpu_freqs_conf(start_cpu_clk_idx);
@@ -245,7 +242,7 @@ int main(int argc, char **argv) {
         }
 
         // Inference option setting
-        std::size_t max_new_tokens = strict_limit ? tokens_limit : tokens_limit - input_tensor.sequence();
+        std::size_t max_new_tokens = _params.strict_limit ? _params.tokens_limit : _params.tokens_limit - input_tensor.sequence();
         //size_t max_new_tokens = 256;
         LlmTextGeneratorOpts opt{
             .max_new_tokens = max_new_tokens,
@@ -260,9 +257,9 @@ int main(int argc, char **argv) {
             // phase clock control is meaningless in this agent case
             
             // phase pause
-            if (ft == 0 && phase_pause > 0) {
+            if (ft == 0 && _params.phase_pause > 0) {
                 // std::cout << std::flush << "sleep\n"; // test
-                this_thread::sleep_for(chrono::milliseconds(phase_pause));
+                this_thread::sleep_for(chrono::milliseconds(_params.phase_pause));
             }
 
             // generation start
@@ -278,7 +275,7 @@ int main(int argc, char **argv) {
                 return false;
             } else {
                 // std::cout << std::flush << " tp "; // test
-                this_thread::sleep_for(chrono::milliseconds(token_pause)); // token pause
+                this_thread::sleep_for(chrono::milliseconds( _params.token_pause)); // token pause
             }
             
             answer += output_string;
@@ -292,7 +289,7 @@ int main(int argc, char **argv) {
         // proifle_res = { prefill_speed, decode_speed, input_token, output_token, ttft  }
         auto profile_res = model.profiling("Inference");
         profile_res.insert(profile_res.begin(), (double)sys_time / (double)1000.0);
-        write_file(profile_res, output_infer); // store in real time
+        write_file(profile_res, _params.output_path_infer); // store in real time
 
         // throttling detection is meaningless in this agent case
 
@@ -303,7 +300,7 @@ int main(int argc, char **argv) {
         ft = 0;
 
         // Query-interval
-        if((qa_now - qa_start) < qa_limit) this_thread::sleep_for(chrono::milliseconds(query_interval));
+        if((qa_now - qa_start) < qa_limit) this_thread::sleep_for(chrono::milliseconds(_params.query_interval));
     }
 
     // measurement done

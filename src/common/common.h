@@ -16,19 +16,6 @@ struct ignite_params {
     int tokens_limit = 0;
     bool strict_limit = false;
     bool enable_thinking = false;
-    
-    // basic measure configs
-    std::string input_path = ""; // path = dir/file.ext
-    std::string output_dir = "";
-    std::string output_path_hard = "";
-    std::string output_path_infer = "";
-    
-    // if needed for CPU/RAM DVFS on static ignite
-    int cpu_clk_idx_p = 0; // prefill + cpu
-    int ram_clk_idx_p = 0; // prefill + ram
-    int cpu_clk_idx_d = 0; // decode + cpu
-    int ram_clk_idx_d = 0; // decode + ram
-    bool fixed_config = false;
 
     // llm plane
     int phase_pause = 0; // ms
@@ -39,7 +26,20 @@ struct ignite_params {
     double prefill_speed = 0.0; // tokens/s
     double decode_speed = 0.0; // tokens/s
 
-    // resource plane
+    // basic measure configs
+    std::string input_path = ""; // path = dir/file.ext
+    std::string output_dir = "";
+    std::string output_path_hard = "";
+    std::string output_path_infer = "";
+    
+    // [OPT. 1] resource plane (static ignite)
+    int cpu_clk_idx_p = 0; // prefill + cpu
+    int ram_clk_idx_p = 0; // prefill + ram
+    int cpu_clk_idx_d = 0; // decode + cpu
+    int ram_clk_idx_d = 0; // decode + ram
+    bool fixed_config = false;
+
+    // [OPT. 2] resource plane (agent ignite)
     double time_slot = 0.5; // s
     double temp_threshold = 80.0; // Celsius
     std::vector<double> temp_history = {}; // temperature history
