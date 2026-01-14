@@ -40,6 +40,7 @@ int main(int argc, char **argv) {
     cmdParser.add<string>("billion", 'b', "[1B | 3B ]", false, "1B");
     cmdParser.add<int>("limits", 'l', "max KV cache size", false, 1024);
     cmdParser.add<int>("thread", 't', "num of threads", false, 4);
+    cmdParser.add<bool>("strict", 0, "apply token limits to only output tokens", false, false);
     
     // arg parser: For Stream
     cmdParser.add<bool>("interface", 'i', "print inference interface", false, true);
