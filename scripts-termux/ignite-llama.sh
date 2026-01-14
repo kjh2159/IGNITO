@@ -21,7 +21,7 @@ su -c "echo 0 > /sys/devices/system/cpu/cpu2/online"
 su -c "echo 0 > /sys/devices/system/cpu/cpu3/online"
 
 ./bin-arm/stream_llama3 \
-  -m models/llama-3.2-1b-q4k.mllm \
+  -m models/llama-3.2-1b-q4k-inst.mllm \
   -v vocab/llama3_tokenizer.model \
   -b 1b \
   -t 4 \
