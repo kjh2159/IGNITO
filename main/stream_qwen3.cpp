@@ -127,7 +127,7 @@ int main(int argc, char **argv) {
     model.load(_params.model_path);
     model.init_ignite_params(_params);  // for this, must turn on "IGNITE_USE_SYSTEM" option when building MLLM
                                         // see scripts/build.sh
-    Module::thread_sleep = layer_pause; // set layer-pause time // deprecated
+    Module::thread_sleep = _params.layer_pause; // set layer-pause time // deprecated
 
     // QA Dataset Load
     vector<vector<string>> qa_list = readCSV(_params.input_path); // qa load

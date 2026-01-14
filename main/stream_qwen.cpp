@@ -103,7 +103,7 @@ int main(int argc, char **argv) {
 
     // file path initialization
     if (!init_ignite_filename(_params)) return -1; // when failed
-    output_qa = joinPaths(output_dir, "HotpotQA_mllm_Qwen_" + model_billion + "_result.json");
+    output_qa = joinPaths(_params.output_dir, "HotpotQA_mllm_Qwen_" + _params.model_billion + "_result.json");
 
     // variable initialization: For Thermal Throttling Detection
     std::string command = apply_sudo_and_get(""); // this function get the command of cpu clock
@@ -150,7 +150,7 @@ int main(int argc, char **argv) {
 
     // measurement start
     auto start_sys_time = chrono::system_clock::now();
-    std::thread record_thread = std::thread(record_hard, std::ref(sigterm), dvfs);
+    std::thread record_thread = std::thread(record_hard, std::ref(sigterm), std::ref(dvfs));
     bool throttling = false;
 
     while ((qa_now - qa_start) < qa_limit) {
