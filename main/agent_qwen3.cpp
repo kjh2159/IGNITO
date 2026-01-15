@@ -205,6 +205,7 @@ int main(int argc, char **argv) {
     dvfs.output_filename = _params.output_path_hard; // dvfs.output_filename requires hardware recording output path
     if (dvfs.init_fd_cache() != 0) {
         fprintf(stderr, "FD cache initialization failed. Are you root or authorized?\n");
+        return -1
     }
 
 

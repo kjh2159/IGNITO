@@ -143,6 +143,8 @@ int main(int argc, char **argv) {
     _params.output_dir = cmdParser.get<string>("output");
     int qa_now = qa_start;
     int qa_limit = 0;
+    string output_hard;
+    string output_infer;
     string output_qa;
 
     // variable initialization: For Pause Techniques
