@@ -143,8 +143,6 @@ int main(int argc, char **argv) {
     _params.output_dir = cmdParser.get<string>("output");
     int qa_now = qa_start;
     int qa_limit = 0;
-    string output_hard;
-    string output_infer;
     string output_qa;
 
     // variable initialization: For Pause Techniques
@@ -154,8 +152,8 @@ int main(int argc, char **argv) {
     _params.query_interval = cmdParser.get<int>("query-interval") * 1000;
 
     // variable initialization: For File Naming
-    output_hard = joinPaths(_params.output_dir, "HotpotQA_mllm_Qwen3_" + _params.model_billion + "_" + to_string(start_cpu_clk_idx) + "-" + to_string(start_ram_clk_idx) + "_resource_agent_hard.txt");
-    output_infer = joinPaths(_params.output_dir, "HotpotQA_mllm_Qwen3_" + _params.model_billion + "_" + to_string(start_cpu_clk_idx) + "-" + to_string(start_ram_clk_idx) + "_resource_agent_infer.txt");
+    _params.output_path_hard = joinPaths(_params.output_dir, "HotpotQA_mllm_Qwen3_" + _params.model_billion + "_" + to_string(start_cpu_clk_idx) + "-" + to_string(start_ram_clk_idx) + "_resource_agent_hard.txt");
+    _params.output_path_infer = joinPaths(_params.output_dir, "HotpotQA_mllm_Qwen3_" + _params.model_billion + "_" + to_string(start_cpu_clk_idx) + "-" + to_string(start_ram_clk_idx) + "_resource_agent_infer.txt");
     output_qa = joinPaths(_params.output_dir, "HotpotQA_mllm_Qwen3_" + _params.model_billion + "_result.json");
 
     // variable initialization: For Thermal Throttling Detection
