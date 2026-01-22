@@ -116,12 +116,22 @@ double Collector::collect_high_temp(){
 
 // -------------------------------------------
 
-
+// write 
 int DVFS::open_wr(const std::string& path) {
     // open with O_CLOEXEC to prevent FD leak to child processes
     int fd = open(path.c_str(), O_WRONLY | O_CLOEXEC);
     if (fd < 0) {
         fprintf(stderr, "[DVFS] open failed: %s (%s)\n", path.c_str(), strerror(errno));
+    }
+    return fd;
+}
+
+int DVFS::open_rd(const std::string& path) {
+    // open with O_CLOEXEC to prevent FD leak to child processes
+    int fd = open(path.c_str(), O_RDONLY | O_CLOEXEC);
+    if (fd < 0) {
+        // only for getter
+        // fprintf(stderr, "[DVFS] open_rd failed: %s (%s)\n", path.c_str(), strerror(errno));
     }
     return fd;
 }
@@ -142,6 +152,16 @@ bool DVFS::try_open_first(const std::vector<std::string>& candidates, int& out_f
             out_fd = fd;
             return true;
         }
+    }
+    out_fd = -1;
+    return false;
+}
+
+bool DVFS::try_open_first_rd(const std::vector<std::string>& candidates, int& out_fd) {
+    // try open files in candidates sequentially
+    for (const auto& p : candidates) {
+        int fd = open_rd(p);
+        if (fd >= 0) { out_fd = fd; return true; }
     }
     out_fd = -1;
     return false;
@@ -174,6 +194,22 @@ int DVFS::write_fd_int(int fd, long long v) {
     return 0;
 }
 
+long long DVFS::read_fd_ll(int fd) {
+    if (fd < 0) return -1;
+
+    char buf[128];
+    (void)lseek(fd, 0, SEEK_SET);
+    ssize_t n = read(fd, buf, sizeof(buf) - 1);
+    if (n < 0) return -2;
+    buf[n] = '\0';
+
+    char* endp = nullptr;
+    errno = 0;
+    long long v = strtoll(buf, &endp, 10);
+    if (errno != 0 || endp == buf) return -3;
+    return v;
+}
+
 // 1) FD cache initialization
 int DVFS::init_fd_cache() {
     std::lock_guard<std::mutex> lk(io_mu);
@@ -190,13 +226,28 @@ int DVFS::init_fd_cache() {
 
         //  Pixel9 and S24 have same path structure
         const std::string base = "/sys/devices/system/cpu/cpufreq/policy" + std::to_string(idx);
+        
+        // WR
         p.max_fd = open_wr(base + "/scaling_max_freq");
         p.min_fd = open_wr(base + "/scaling_min_freq");
+
+        // RD candidates
+        std::vector<std::string> cur_candidates = {
+            base + "/scaling_cur_freq",
+            base + "/cpuinfo_cur_freq",
+            base + "/scaling_setspeed"
+        };
+
+        if (!try_open_first_rd(cur_candidates, p.cur_fd)) {
+            // fprintf(stderr, "[DVFS] policy%d cur open failed (need root? path mismatch)\n", idx);
+            p.cur_fd = -1; // not critical
+        }
 
         if (p.max_fd < 0 || p.min_fd < 0) {
             fprintf(stderr, "[DVFS] policy%d open incomplete (need root?)\n", idx);
             close_fd(p.max_fd);
             close_fd(p.min_fd);
+            close_fd(p.cur_fd);
             // if failure, close all and return error
             close_fd_cache();
             fd_ready = false;
@@ -210,6 +261,7 @@ int DVFS::init_fd_cache() {
     // Pixel 9 and S24 have same base path
     mif_fds.base = "/sys/devices/platform/17000010.devfreq_mif/devfreq/17000010.devfreq_mif";
     {
+        // WR
         // Depending on device and kernel, the min/max path differs
         std::vector<std::string> min_candidates = {
             mif_fds.base + "/scaling_devfreq_min", // S24
@@ -242,6 +294,17 @@ int DVFS::init_fd_cache() {
             fd_ready = false;
             return -3;
         }
+
+        // RD
+        // MIF(devfreq) RD candidates
+        std::vector<std::string> mif_cur_candidates = {
+            mif_fds.base + "/cur_freq",
+            mif_fds.base + "/scaling_cur_freq",
+            mif_fds.base + "/actual_freq"
+        };
+        if (!try_open_first_rd(mif_cur_candidates, mif_fds.cur_fd)) {
+            mif_fds.cur_fd = -1;
+        }
     }
 
     fd_ready = true;
@@ -259,13 +322,15 @@ void DVFS::close_fd_cache_nolock() {
     // assume io_mu is already locked
     // to avoid deadlock
     for (auto& p : cpu_fds) {
-        close_fd(p.max_fd);
-        close_fd(p.min_fd);
+        close_fd(p.max_fd); // WR
+        close_fd(p.min_fd); // WR
+        close_fd(p.cur_fd); // RD
     }
     cpu_fds.clear();
 
-    close_fd(mif_fds.min_fd);
-    close_fd(mif_fds.max_fd);
+    close_fd(mif_fds.min_fd); // WR
+    close_fd(mif_fds.max_fd); // WR
+    close_fd(mif_fds.cur_fd); // RD
 
     fd_ready = false;
 }
@@ -362,4 +427,62 @@ int DVFS::unset_ram_freq() {
     if (write_fd_int(mif_fds.max_fd, max_clk) != 0) return 3;
     if (write_fd_int(mif_fds.min_fd, min_clk) != 0) return 4;
     return 0;
+}
+
+
+// 4) getter
+int DVFS::get_cur_cpu_idx() {
+    std::lock_guard<std::mutex> lk(io_mu);
+
+    if (!fd_ready) return -100;
+    if (cluster_indices.empty()) return -101;
+
+    int prime_policy = cluster_indices.back();
+
+    CpuPolicyFD* fdp = nullptr;
+    for (auto& p : cpu_fds) {
+        if (p.policy_idx == prime_policy) { fdp = &p; break; }
+    }
+    if (!fdp) return -102;
+    if (fdp->cur_fd < 0) return -103; // cur read path 자체가 없음
+
+    long long cur = read_fd_ll(fdp->cur_fd);
+    if (cur < 0) return -104;
+
+    const auto& table = cpufreq.at(device).at(prime_policy);
+
+    // 단위 보정 (Hz로 읽히면 /1000)
+    long long cur_khz = cur;
+    if (cur_khz > 10000000LL) cur_khz /= 1000LL;
+
+    return nearest_index_ll(table, cur_khz);
+}
+
+int DVFS::get_cur_ram_idx() {
+    std::lock_guard<std::mutex> lk(io_mu);
+
+    if (!fd_ready) return -200;
+    if (mif_fds.cur_fd < 0) return -201;
+
+    long long cur = read_fd_ll(mif_fds.cur_fd);
+    if (cur < 0) return -202;
+
+    const auto& table = ddrfreq.at(device);
+
+    long long cur_khz = cur;
+    if (cur_khz > 10000000LL) cur_khz /= 1000LL;
+
+    return nearest_index_ll(table, cur_khz);
+}
+
+// 5) util functions
+int DVFS::nearest_index_ll(const std::vector<int>& table, long long value) {
+    if (table.empty()) return -1;
+    long long best = std::numeric_limits<long long>::max();
+    int best_i = 0;
+    for (int i = 0; i < (int)table.size(); ++i) {
+        long long diff = llabs((long long)table[i] - value);
+        if (diff < best) { best = diff; best_i = i; }
+    }
+    return best_i;
 }

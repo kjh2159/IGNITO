@@ -60,13 +60,15 @@ private:
     // ---- FD cache structure ----
     struct CpuPolicyFD {
         int policy_idx = -1;
-        int min_fd = -1; // scaling_min_freq
-        int max_fd = -1; // scaling_max_freq
+        int min_fd = -1; // WR: scaling_min_freq
+        int max_fd = -1; // WR: scaling_max_freq
+        int cur_fd = -1; // RD: scaling_cur_freq 
     };
 
     struct MifFD {
-        int min_fd = -1; // scaling_devfreq_min (or min_freq)
-        int max_fd = -1; // scaling_devfreq_max (or max_freq)
+        int min_fd = -1; // WR: scaling_devfreq_min (or min_freq)
+        int max_fd = -1; // WR: scaling_devfreq_max (or max_freq)
+        int cur_fd = -1; // RD: scaling_devfreq_cur (or cur_freq)
         std::string base;
     };
 
@@ -100,13 +102,24 @@ public:
     void close_fd_cache();  // sysfs close
     bool fd_cache_enabled() const { return fd_ready; }
 
+    //getter
+    int get_cur_cpu_idx(); // prime policy idx
+    int get_cur_ram_idx(); // mif clock idx
 private:
     // internal helper
     static int open_wr(const std::string& path);
-    static int write_fd_int(int fd, long long v);
+    static int open_rd(const std::string& path);
     static void close_fd(int& fd);
-    static bool try_open_first(const std::vector<std::string>& candidates, int& out_fd);
     void close_fd_cache_nolock();
+    
+    // try open first available path from candidates
+    static bool try_open_first(const std::vector<std::string>& candidates, int& out_fd);    // WR
+    static bool try_open_first_rd(const std::vector<std::string>& candidates, int& out_fd); // RD
+
+    static int write_fd_int(int fd, long long v);
+    static int read_fd_ll(int fd);
+    
+    static int neares_index_ll(const std::vector<int>& table, long long v);
 };
 
 #endif //DVFS_H
