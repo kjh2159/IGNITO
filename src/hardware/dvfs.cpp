@@ -431,6 +431,8 @@ int DVFS::unset_ram_freq() {
 
 
 // 4) getter
+// Warning: do not use this function right after set_* functions
+//          due to same mutex lock guard by read and write.
 int DVFS::get_cur_cpu_idx() {
     std::lock_guard<std::mutex> lk(io_mu);
 
@@ -444,14 +446,13 @@ int DVFS::get_cur_cpu_idx() {
         if (p.policy_idx == prime_policy) { fdp = &p; break; }
     }
     if (!fdp) return -102;
-    if (fdp->cur_fd < 0) return -103; // cur read path 자체가 없음
+    if (fdp->cur_fd < 0) return -103;
 
     long long cur = read_fd_ll(fdp->cur_fd);
     if (cur < 0) return -104;
 
     const auto& table = cpufreq.at(device).at(prime_policy);
 
-    // 단위 보정 (Hz로 읽히면 /1000)
     long long cur_khz = cur;
     if (cur_khz > 10000000LL) cur_khz /= 1000LL;
 

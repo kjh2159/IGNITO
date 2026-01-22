@@ -117,9 +117,9 @@ private:
     static bool try_open_first_rd(const std::vector<std::string>& candidates, int& out_fd); // RD
 
     static int write_fd_int(int fd, long long v);
-    static int read_fd_ll(int fd);
+    static long long read_fd_ll(int fd);
     
-    static int neares_index_ll(const std::vector<int>& table, long long v);
+    static int nearest_index_ll(const std::vector<int>& table, long long v);
 };
 
 #endif //DVFS_H
