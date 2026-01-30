@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.10)
 
 project(mllm)
+message(STATUS "PROJECT_SRC_DIR = ${PROJECT_SRC_DIR}")
+message(STATUS "CMAKE_SOURCE_DIR = ${CMAKE_SOURCE_DIR}")
 
 # 添加编译选项来禁用所有警告
 # if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
@@ -68,6 +70,7 @@ option(QUANT "quantize tools" ON)
 option(ANALYZE "analyzer tools" ON)
 option(APK "Build for Android APK Lib." OFF)
 option(FROM_GGUF "convert from gguf" OFF)
+option(PERFETTO "Enable Perfetto Tracing" OFF)
 
 option(DEBUG "debug print" OFF)
 if(DEBUG)
@@ -246,7 +249,11 @@ if(ANALYZE)
     target_link_libraries(analyzer fmt::fmt-header-only)
 endif()
 
+if(PERFETTO)
+    add_library(perfetto STATIC ${PROJECT_SOURCE_DIR}/third_party/perfetto/sdk/perfetto.cc)
 
+    target_include_directories(perfetto PUBLIC ${PROJECT_SOURCE_DIR}/third_party/perfetto/sdk/)
+endif()
 
 if(TEST)
     add_subdirectory(test)
