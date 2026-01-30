@@ -32,7 +32,7 @@ names = list(track_map.keys())
 nano = 1E-9
 micro = 1E-6
 milli = 1E-3
-tp = TraceProcessor('power_trace.perfetto-trace')
+tp = TraceProcessor('traces-lp25.perfetto-trace')
 
 collection = pd.DataFrame()
 # power collection with calculation
@@ -54,5 +54,5 @@ for i, n in zip(ids, names):
     collection = pd.concat([collection, delta], axis=1)
 
 # save to csv
-filename = "output.csv"
+filename = "perfetto/output-lp25.csv"
 collection.to_csv(filename, index=True)
