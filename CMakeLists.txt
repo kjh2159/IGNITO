@@ -253,6 +253,8 @@ if(PERFETTO)
     add_library(perfetto STATIC ${PROJECT_SOURCE_DIR}/third_party/perfetto/sdk/perfetto.cc)
 
     target_include_directories(perfetto PUBLIC ${PROJECT_SOURCE_DIR}/third_party/perfetto/sdk/)
+    target_compile_definitions(perfetto PRIVATE PERFETTO_IMPLEMENTATION=1)
+    add_subdirectory(perfetto)
 endif()
 
 if(TEST)

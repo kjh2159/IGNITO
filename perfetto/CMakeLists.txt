@@ -15,11 +15,15 @@ macro(func_link_libaries target)
     if (MLLM_BUILD_XNNPACK_BACKEND)
         target_link_libraries(${target} PRIVATE MllmXnnpackBackend)
     endif()
+    if(PERFETTO)
+        target_link_libraries(${target} PRIVATE perfetto log)
+        target_compile_definitions(perfetto PUBLIC PERFETTO_IMPLEMENTATION=1)
+    endif()
 endmacro()
 
 macro(func_llm_add_executable target)
     add_executable(${target}
-        ${PROJECT_SOURCE_DIR}/main/${target}.cpp 
+        ${PROJECT_SOURCE_DIR}/perfetto/${target}.cpp 
         ${DIR_SRC_CPU} 
         ${DIR_SRC_MEM_MANAGER} 
         ${DIR_SRC_EXP} 
@@ -46,13 +50,4 @@ macro(func_llm_add_executable target)
     endif()
 endmacro()
 
-# func_llm_add_executable(qwen_eval)
-# func_llm_add_executable(qwen3_eval)
-# func_llm_add_executable(test_qwen)
-# func_llm_add_executable(stream_qwen)
-# func_llm_add_executable(stream_qwen3)
-# func_llm_add_executable(stream_llama3)
-# func_llm_add_executable(agent_qwen3)
-func_llm_add_executable(agent_aff_qwen3)
-# func_llm_add_executable(token_length_tester)
-func_llm_add_executable(micro)
+func_llm_add_executable(qwen3_perf)
