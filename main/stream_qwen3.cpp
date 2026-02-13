@@ -161,6 +161,13 @@ int main(int argc, char **argv) {
     if (qa_len == -1) { qa_limit = qa_list.size();
     } else { qa_limit = MIN(qa_list.size(), qa_start + qa_len) - 1; }
 
+    // initial setting for fixed config
+    if (_params.fixed_config) {
+        freq_config = dvfs.get_cpu_freqs_conf(_params.cpu_clk_idx_p);
+        dvfs.set_cpu_freq(freq_config);
+        dvfs.set_ram_freq(_params.ram_clk_idx_p);
+    }
+
     // measurement start
     auto start_sys_time = chrono::system_clock::now();
     std::thread record_thread = std::thread(record_hard, std::ref(sigterm), std::ref(dvfs));
