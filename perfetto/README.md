@@ -47,9 +47,9 @@ At the top of `main()` in `qwen3_perf.cpp`, the program currently returns early:
 return 0;
 ```
 
-That means the full Qwen3 streaming/inference path below is currently **not executed**.
+That means the full Qwen3 streaming/inference path below is **not executed** if `PERFETTO_IMPLEMENTATION` is not active (`-DPERFETTO=ON`).
 
-So right now, the file should be treated as a **Perfetto integration example / scaffold**, not a fully active benchmark binary.
+So, the file should be treated as a **Perfetto integration example / scaffold**, not a fully active benchmark binary.
 
 ---
 
