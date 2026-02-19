@@ -67,6 +67,10 @@ const std::string get_records_names(const DVFS& dvfs) {
     // RAM clock info
     names += "scaling_devfreq_max,scaling_devfreq_min,cur_freq,";
 
+    #if defined(MV_COLLECT)
+        names += "cpu_mid_power,cpu_mid_current,cpu_big_power,cpu_big_current,";
+    #endif
+
     // remove emptyThermal 
 	for (std::string empty : dvfs.get_empty_thermal()){
 		if (empty == "qcom,secure-non"){
@@ -143,6 +147,10 @@ std::vector<std::string> get_hard_records(const DVFS& dvfs) {
         command += "awk '{print \\$1/1000}' /sys/devices/platform/17000010.devfreq_mif/devfreq/17000010.devfreq_mif/cur_freq; ";
     }
 
+    #if defined(MV_COLLECT)
+        command += "awk '{print \\$1}' /sys/bus/iio/devices/iio:device1/in_power2_scale; awk '{print \\$1}' /sys/bus/iio/devices/iio:device1/in_current2_scale "; //CPU (MID)
+        command += "awk '{print \\$1}' /sys/bus/iio/devices/iio:device1/in_power3_scale; awk '{print \\$1}' /sys/bus/iio/devices/iio:device1/in_current3_scale "; //CPU (BIG)
+    #endif
 
     // closing quote
     command += "\"";
