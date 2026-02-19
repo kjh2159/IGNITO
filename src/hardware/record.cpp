@@ -68,7 +68,7 @@ const std::string get_records_names(const DVFS& dvfs) {
     names += "scaling_devfreq_max,scaling_devfreq_min,cur_freq,";
 
     #if defined(MV_COLLECT)
-        names += "cpu_mid_power,cpu_mid_current,cpu_big_power,cpu_big_current,";
+        names += "cpu_mid_power,cpu_mid_current,cpu_big_power,cpu_big_current,cpu_mid_M_power,cpu_mid_M_current,";
     #endif
 
     // remove emptyThermal 
@@ -148,8 +148,9 @@ std::vector<std::string> get_hard_records(const DVFS& dvfs) {
     }
 
     #if defined(MV_COLLECT)
-        command += "awk '{print \\$1}' /sys/bus/iio/devices/iio:device1/in_power2_scale; awk '{print \\$1}' /sys/bus/iio/devices/iio:device1/in_current2_scale "; //CPU (MID)
-        command += "awk '{print \\$1}' /sys/bus/iio/devices/iio:device1/in_power3_scale; awk '{print \\$1}' /sys/bus/iio/devices/iio:device1/in_current3_scale "; //CPU (BIG)
+        command += "awk '{print \\$1}' /sys/bus/iio/devices/iio:device1/in_power2_scale; awk '{print \\$1}' /sys/bus/iio/devices/iio:device1/in_current2_scale; "; //CPU (MID)
+        command += "awk '{print \\$1}' /sys/bus/iio/devices/iio:device1/in_power3_scale; awk '{print \\$1}' /sys/bus/iio/devices/iio:device1/in_current3_scale; "; //CPU (BIG)
+        command += "awk '{print \\$1}' /sys/bus/iio/devices/iio:device1/in_power8_scale; awk '{print \\$1}' /sys/bus/iio/devices/iio:device1/in_current8_scale; "; //CPU (MID)
     #endif
 
     // closing quote
