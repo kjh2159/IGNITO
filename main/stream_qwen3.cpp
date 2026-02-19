@@ -211,7 +211,7 @@ int main(int argc, char **argv) {
             // now prefill done (when ft==0)
 
             // decode phase control
-            if (ft == 0 && !_params.fixed_config) {
+            if (ft == 0 && !_params.fixed_config && !throttling) {
                 freq_config = dvfs.get_cpu_freqs_conf(_params.cpu_clk_idx_d);
                 dvfs.set_cpu_freq(freq_config);
                 dvfs.set_ram_freq(_params.ram_clk_idx_d);
@@ -265,7 +265,8 @@ int main(int argc, char **argv) {
             // new ver.
             model.params.layer_pause = 0;
             throttling = true;            
-
+            dvfs.set_ram_freq(_params.ram_clk_idx_d);
+            
             // checking
             std::clog << "\r\n<throttling-detected>\r\n";
         }
