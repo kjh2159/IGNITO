@@ -179,6 +179,7 @@ int main(int argc, char **argv) {
         int ft = 0; // first token
         auto now_sys_time = chrono::system_clock::now();
 
+        // prefill phase control
         if (!_params.fixed_config && !throttling) {
             freq_config = dvfs.get_cpu_freqs_conf(_params.cpu_clk_idx_p);
             dvfs.set_cpu_freq(freq_config);
@@ -209,7 +210,7 @@ int main(int argc, char **argv) {
             auto out_string = tokenizer.detokenize({out_token});
             // now prefill done (when ft==0)
 
-            // phase clock control
+            // decode phase control
             if (ft == 0 && !_params.fixed_config) {
                 freq_config = dvfs.get_cpu_freqs_conf(_params.cpu_clk_idx_d);
                 dvfs.set_cpu_freq(freq_config);
@@ -264,6 +265,9 @@ int main(int argc, char **argv) {
             // new ver.
             model.params.layer_pause = 0;
             throttling = true;            
+
+            // checking
+            std::clog << "\r\n<throttling-detected>\r\n";
         }
 
         // Reset
