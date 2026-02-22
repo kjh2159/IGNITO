@@ -72,15 +72,17 @@ Inference Governed by Nested lazy Ignition for Thermal Efficiency
 
 #### Tested
 
-| Model            | Arch.  | Backend     | OS      |
-|------------------|--------|-------------|---------|
-| Google Pixel9    | armv8  | Tensor G4   | Android |
-| Galaxy S24       | armv8  | Exynos 2400 | Android |
-| Our workstation* | amd64  | Intel       | Linux   |
+| Model            | Arch.  | Backend            | OS      | CPU DVFS | RAM DVFS |
+|------------------|--------|--------------------|---------|----------|----------|
+| Google Pixel9    | armv8  | Tensor G4          | Android |✅        |✅       |
+| Galaxy S24       | armv8  | Exynos 2400        | Android |✅        |✅       |
+| Galaxy S25       | armv8  | Snapdragon 8 Elite | Android |✅        |❌       |
+| Our workstation* | amd64  | Intel              | Linux   |-         |-       |
 
 > \* Linux device (our workstation) is tested for only response generation not ignite. <br>
-> ⚠️ The issue that Galaxy S25 (over bit 7) and Z Fold 7 do not accept rooting is recently found.
-> ⚠️ Basically, the target mobile devices should support RAM DVFS.
+> ⚠️ **Galaxy S25** might not accept rooting depending on device firmware version (over Bit/SW Rev. vale 7) <br>
+> ⚠️ **Z Fold 7** do not accept rooting. <br>
+> ⚠️ Basically, the target mobile devices might not support RAM DVFS.
 
 </details>
 
