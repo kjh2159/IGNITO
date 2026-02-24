@@ -77,6 +77,7 @@ Inference Governed by Nested lazy Ignition for Thermal Efficiency
 | Google Pixel9    | armv8  | Tensor G4          | Android |✅        |✅       |
 | Galaxy S24       | armv8  | Exynos 2400        | Android |✅        |✅       |
 | Galaxy S25       | armv8  | Snapdragon 8 Elite | Android |✅        |❌       |
+| Galaxy Z Fold 7  | armv8  | Snapdragon 8 Elite | Android |❌        |❌       |
 | Our workstation* | amd64  | Intel              | Linux   |-         |-       |
 
 > \* Linux device (our workstation) is tested for only response generation not ignite. <br>
