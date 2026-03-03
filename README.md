@@ -238,6 +238,12 @@ cd bin
 ./quantize model.mllm model_q4_k.mllm Q4_K
 ```
 
+## 💫 Caution
+
+Depending on mobile device types and the individual device, the prefill and decode speeds might fluctuate. These negative phenomena are observed in almost all on-device LLM engines.
+
+
+
 ## ✨ Acknowledgments
 
 *IGNITE* project reuses the base kernels and implementation of [mllm](https://github.com/UbiquitousLearning/mllm).
@@ -260,3 +266,5 @@ Certain component([wenet](https://github.com/wenet-e2e/wenet)) of this project i
 These component is clearly identified in their respective subdirectories along with a copy of the Apache License 2.0.
 For the full text of the Apache License 2.0, please refer to the [LICENSE-APACHE](third_party/wenet_audio/LICENSE) file
 located in the relevant subdirectories.
+
+
