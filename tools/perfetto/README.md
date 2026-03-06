@@ -1,5 +1,9 @@
 # Perfetto analysis
 
+## Before Reading
+
+The collection of perfetto data should be conducted through [here](https://github.com/kjh2159/mllm/tree/main/perfetto)
+
 ## Example
 
 A simple example of perfetto trace for reproduction is provided like the following.
