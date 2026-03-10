@@ -6,19 +6,19 @@ echo "Device: $DEV"
 # turn-off screen
 if [ "$DEV" = "Pixel9" ]; then
   # Pixel9
-  su -c "echo 0 > /sys/class/backlight/panel0-backlight/brightness"
+  echo 0 > /sys/class/backlight/panel0-backlight/brightness
 else
   # S24
-  su -c "echo 0 > /sys/class/backlight/panel/brightness"
+  echo 0 > /sys/class/backlight/panel/brightness
   DEV="S24"
 fi
 
 sleep 3 # stabilize
 
 # silver core control
-su -c "echo 0 > /sys/devices/system/cpu/cpu1/online"
-su -c "echo 0 > /sys/devices/system/cpu/cpu2/online"
-su -c "echo 0 > /sys/devices/system/cpu/cpu3/online"
+# su -c "echo 0 > /sys/devices/system/cpu/cpu1/online"
+# su -c "echo 0 > /sys/devices/system/cpu/cpu2/online"
+# su -c "echo 0 > /sys/devices/system/cpu/cpu3/online"
 
 ./bin-arm/stream_qwen3 \
   -m models/qwen-3-1.7b-q4k.mllm \
@@ -49,16 +49,16 @@ su -c "echo 0 > /sys/devices/system/cpu/cpu3/online"
 # [interval-unit] = s
 
 # silver core reset
-su -c "echo 1 > /sys/devices/system/cpu/cpu1/online"
-su -c "echo 1 > /sys/devices/system/cpu/cpu2/online"
-su -c "echo 1 > /sys/devices/system/cpu/cpu3/online"
+# su -c "echo 1 > /sys/devices/system/cpu/cpu1/online"
+# su -c "echo 1 > /sys/devices/system/cpu/cpu2/online"
+# su -c "echo 1 > /sys/devices/system/cpu/cpu3/online"
 
 # turn-on screen
 # turn-off screen
 if [ "$DEV" = "Pixel9" ]; then
   # Pixel9
-  su -c "echo 1023 > /sys/class/backlight/panel0-backlight/brightness"
+  echo 1023 > /sys/class/backlight/panel0-backlight/brightness
 else
   # S24
-  su -c "echo 1023 > /sys/class/backlight/panel/brightness"
+  echo 1023 > /sys/class/backlight/panel/brightness
 fi
