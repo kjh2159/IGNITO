@@ -205,7 +205,7 @@ python3 tools/py/downloader.py
 To collect data from perfeto in pure C++ code, you should build the library and enable the build option manually.
 You can build the perfetto library by following the script below.
 
-*[FILL HERE]*
+See [here](https://github.com/kjh2159/mllm/tree/main/perfetto).
 
 ## 🪐 Customization
 
