@@ -83,7 +83,7 @@ Inference Governed by Nested lazy Ignition for Thermal Efficiency
 
 > \* Linux device (our workstation) is tested for only response generation not ignite. <br>
 > ⚠️ **Galaxy S25** might not accept rooting depending on device firmware version (over Bit/SW Rev. vale 7) <br>
-> ⚠️ **Z Fold 7** do not accept rooting. <br>
+> ⚠️ **Z Fold 7** does not accept rooting. <br>
 > ⚠️ Basically, the target mobile devices might not support RAM DVFS.
 
 </details>
