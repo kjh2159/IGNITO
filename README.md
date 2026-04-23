@@ -25,6 +25,7 @@ Inference Governed by Nested lazy Ignition for Thermal Efficiency
   - Phase-level pause injection
   - Layer-level pause injection
   - Token-level pause injection
+  - Nested control
 
 
 <!-- ### Contents
