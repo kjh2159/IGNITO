@@ -10,11 +10,11 @@ Inference-Governing Nested lazy Ignition Thermal Organizer
 | Arm CPU | X86 CPU |
 </h4>
 
-<h4 align="center">
+<!-- <h4 align="center">
 [![Paper](https://img.shields.io/badge/view-paper-blue)](#)
 [![Android App](https://img.shields.io/badge/android-app-pink)](https://github.com/kjh2159/ChatBotApp/)
 [![Actions Status](https://github.com/UbiquitousLearning/mllm/workflows/Tests/badge.svg)](https://github.com/kjh2159/mllm/actions)
-</h4>
+</h4> -->
 
 - Plain C/C++ implementation without dependencies
 - Supported: ARM NEON, x86 AVX2, etc
