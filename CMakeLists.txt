@@ -71,6 +71,7 @@ option(ANALYZE "analyzer tools" ON)
 option(APK "Build for Android APK Lib." OFF)
 option(FROM_GGUF "convert from gguf" OFF)
 option(PERFETTO "Enable Perfetto Tracing" OFF)
+option(MV "Measure voltage" OFF)
 
 option(DEBUG "debug print" OFF)
 if(DEBUG)
