@@ -1,9 +1,9 @@
 <h1 align="center">
-  <em>IGNITE</em>
+  <em>IGNITO</em>
 </h1>
 
 <h3 align="center">
-Inference Governed by Nested lazy Ignition for Thermal Efficiency
+Inference-Governing Nested lazy Ignition Thermal Organizer
 </h3>
 
 <h4 align="center">
@@ -11,7 +11,6 @@ Inference Governed by Nested lazy Ignition for Thermal Efficiency
 </h4>
 
 <h4 align="center">
-
 [![Paper](https://img.shields.io/badge/view-paper-blue)](#)
 [![Android App](https://img.shields.io/badge/android-app-pink)](https://github.com/kjh2159/ChatBotApp/)
 [![Actions Status](https://github.com/UbiquitousLearning/mllm/workflows/Tests/badge.svg)](https://github.com/kjh2159/mllm/actions)
@@ -20,7 +19,7 @@ Inference Governed by Nested lazy Ignition for Thermal Efficiency
 - Plain C/C++ implementation without dependencies
 - Supported: ARM NEON, x86 AVX2, etc
 - Various quantization schemes
-- Advanced support for *IGNITE*
+- *IGNITO* supports a *IGNITE* module and it contains
   - Phase-level DVFS control (CPU/RAM)
   - Phase-level pause injection
   - Layer-level pause injection
@@ -94,8 +93,8 @@ Inference Governed by Nested lazy Ignition for Thermal Efficiency
 ### 1. Get the code
 
 ```bash
-git clone --recursive https://github.com/kjh2159/mllm ignite
-cd ignite
+git clone --recursive https://github.com/kjh2159/mllm ignito
+cd ignito
 ```
 
 ### 2. Check prerequisites
@@ -123,7 +122,7 @@ Building mllm requires following tools:
 
 #### b. *Download model: Qwen3 1.7B*
 
-Download the model from [here](https://huggingface.co/mllmTeam/qwen-1.5-0.5b-mllm/tree/main) and place the model file in the directory of `models`, or using the following instructions
+Download the model from [here](https://huggingface.co/kjh2159/Qwen3-1.7B-MLLM/resolve/main/qwen3-1.7b-q4_k.mllm) and place the model file in the directory of `models`, or using the following instructions
 
 ```bash
 mkdir ../models && cd ../models
@@ -168,7 +167,7 @@ sh build.sh
 
 #### b. *Download Qwen3 1.7B*
 
-Download the model from [here](https://huggingface.co/mllmTeam/qwen-1.5-0.5b-mllm/tree/main) and place the model file in the directory of `models`, or using the following instructions
+Download the model from [here](https://huggingface.co/kjh2159/Qwen3-1.7B-MLLM/resolve/main/qwen3-1.7b-q4_k.mllm) and place the model file in the directory of `models`, or using the following instructions
 
 ```bash
 mkdir ../models && cd ../models
