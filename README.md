@@ -252,6 +252,7 @@ cd bin
 ## 💫 Caution
 
 Depending on mobile device types and the individual device, the prefill and decode speeds might fluctuate. These negative phenomena are observed in almost all on-device LLM engines.
+The full framework would be revealed after paper acceptance.
 
 
 
