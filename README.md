@@ -49,6 +49,8 @@ Inference-Governing Nested lazy Ignition Thermal Organizer
 
 **Now, mllm engine is only supported. We are preparing llama.cpp support for public version.**
 
+**IGNITO composition mllm engine would be replaced with the second version of mllm, soon.**
+
 ## 🎟️ Supports
 <details>
   <summary><strong>Language models</strong></summary>
