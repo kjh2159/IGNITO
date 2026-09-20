@@ -15,7 +15,7 @@
 #include "hardware/dvfs.h"
 #include "hardware/record.h"
 #include "hardware/utils.h"
-#include "common/common.h" // common for ignite
+#include "common/common.h" // common for ignito_params
 
 #include <cstdlib>
 #include <thread>
@@ -32,7 +32,7 @@ int main(int argc, char **argv) {
     std::iostream::sync_with_stdio(false);
     cmdline::parser cmdParser;
     pid_t pid = getpid();
-    ignite_params _params;
+    ignito_params _params;
 
     // arg parser: BASIC
     cmdParser.add<string>("vocab", 'v', "specify mllm tokenizer model path", false, "../vocab/llama3_tokenizer.model");
@@ -57,7 +57,7 @@ int main(int argc, char **argv) {
     cmdParser.add<int>("cpu-d", 'C', "specify CPU clock index for CPU DVFS", true, 0);
     cmdParser.add<int>("ram-d", 'R', "specify RAM clock index for RAM DVFS", true, 0);
     
-    // arg parser: For IGNITE techniques
+    // arg parser: For lazy ignition techniques
     /* Unit [ms] */
     cmdParser.add<int>("phase-pause", 'p', "specify a pause time between phases (ms)", true, 0);
     cmdParser.add<int>("token-pause", 'P', "specify a pause time between generation tokens (ms)", false, 0);
@@ -102,7 +102,7 @@ int main(int argc, char **argv) {
     _params.query_interval = cmdParser.get<int>("query-interval") * 1000;
 
     // file path initialization
-    if (!init_ignite_filename(_params)) return -1; // when failed
+    if (!init_ignito_filename(_params)) return -1; // when failed
     output_qa = joinPaths(_params.output_dir, "HotpotQA_mllm_Qwen_" + _params.model_billion + "_result.json");
 
     // variable initialization: For Thermal Throttling Detection

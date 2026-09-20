@@ -3,7 +3,7 @@ mkdir ../build
 cd ../build || exit
 
 cmake ..\
-	-DIGNITE_USE_SYSTEM=ON \
+	-DIGNITO_USE_SYSTEM=ON \
 	-DPERFETTO=OFF \
 	-DMV=OFF \
 	-DCMAKE_BUILD_TYPE=Release \

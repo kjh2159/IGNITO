@@ -197,7 +197,8 @@ public:
         // collect inference speed at the moment
         params.prefill_phase = (inputs[0].sequence() > 1);
         // this collection is valid for each independent turn.
-        if (inference_times_.size() <= 1) { params.prefill_speed = inputs[0].sequence() / inference_times_[0];
+        if (inference_times_.size() == 0) { params.prefill_speed = 12.0; } // avoid undefined behavior by empty vector
+        else if (inference_times_.size() == 1) { params.prefill_speed = inputs[0].sequence() / inference_times_[0];
         } else { params.decode_speed = 1000 / inference_times_[inference_times_.size() - 1]; }
         
         for (auto &block : blocks) { 
