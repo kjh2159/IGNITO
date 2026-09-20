@@ -74,7 +74,7 @@ public:
 
     // For layer pause
     static int thread_sleep;
-    static ignite_params params;
+    static ignito_params params;
 
 private:
     template <typename... Args>
@@ -104,11 +104,11 @@ public:
     BackendType device() const {
         return device_;
     }
-#ifdef IGNITE_USE_SYSTEM
-    static ignite_params* init_ignite_params() {
+#ifdef IGNITO_USE_SYSTEM
+    static ignito_params* init_ignito_params() {
         return &params;
     }
-    static void init_ignite_params(ignite_params& p) {
+    static void init_ignito_params(ignito_params& p) {
         params = p;
     }
 #endif

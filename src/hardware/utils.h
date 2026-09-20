@@ -17,7 +17,7 @@ std::string execute_cmd(const char* cmd);
 // throttling detection support
 std::string apply_sudo_and_get(std::string command);
 
-struct ignite_params;
-const bool init_ignite_filename(ignite_params& _ip);
+struct ignito_params;
+const bool init_ignito_filename(ignito_params& _ip);
 
 #endif // HARD_UTILS_H

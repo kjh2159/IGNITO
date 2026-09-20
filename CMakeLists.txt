@@ -132,7 +132,7 @@ elseif(${CMAKE_SYSTEM_PROCESSOR} MATCHES "arm" OR ${CMAKE_SYSTEM_PROCESSOR} MATC
     endif()
 endif()
 
-option(IGNITE_USE_SYSTEM_DVFS "ignite: use system" OFF)
+option(IGNITO_USE_SYSTEM_DVFS "ignito: use system" OFF)
 
 aux_source_directory(${PROJECT_SOURCE_DIR}/src DIR_SRC)
 

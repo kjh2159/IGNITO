@@ -1,12 +1,12 @@
 #ifndef COMMON_H
 #define COMMON_H
 
-// This common file is for IGNITE technique parameters
+// This common file is for lazy ignition technique parameters in IGNITO.
 
 #include <vector>
 #include <string>
 
-struct ignite_params {
+struct ignito_params {
     // basic model configs
     std::string vocab_path = "";
     std::string merge_path = "";
@@ -32,14 +32,14 @@ struct ignite_params {
     std::string output_path_hard = "";
     std::string output_path_infer = "";
     
-    // [OPT. 1] resource plane (static ignite)
+    // [OPT. 1] resource plane (static lazy ignition)
     int cpu_clk_idx_p = 0; // prefill + cpu
     int ram_clk_idx_p = 0; // prefill + ram
     int cpu_clk_idx_d = 0; // decode + cpu
     int ram_clk_idx_d = 0; // decode + ram
     bool fixed_config = false;
 
-    // [OPT. 2] resource plane (agent ignite)
+    // [OPT. 2] resource plane (agent lazy ignition)
     double time_slot = 0.5; // s
     double temp_threshold = 80.0; // Celsius
     std::vector<double> temp_history = {}; // temperature history

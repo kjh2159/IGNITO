@@ -26,7 +26,7 @@ std::unordered_map<string, shared_ptr<Op>> Module::tensor_func_ops;
 
 int Module::graphIdx = 0;
 int Module::thread_sleep = 0;
-ignite_params Module::params;
+ignito_params Module::params;
 
 vector<double> Module::profiling(string name) {
     vector<double> output;

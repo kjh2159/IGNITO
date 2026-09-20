@@ -39,10 +39,10 @@ macro(func_llm_add_executable target)
         ${PROJECT_SOURCE_DIR}/src/common/common.h
     )
     func_link_libaries(${target})
-    if (IGNITE_USE_SYSTEM)
-        target_compile_definitions(${target} PUBLIC IGNITE_USE_SYSTEM=1)
+    if (IGNITO_USE_SYSTEM)
+        target_compile_definitions(${target} PUBLIC IGNITO_USE_SYSTEM=1)
     else()
-        target_compile_definitions(${target} PUBLIC IGNITE_USE_SYSTEM=0)
+        target_compile_definitions(${target} PUBLIC IGNITO_USE_SYSTEM=0)
     endif()
 
     if (MV)

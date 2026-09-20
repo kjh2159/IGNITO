@@ -50,7 +50,7 @@ static void pin_current(std::initializer_list<int> cpus) {
 }
 
 
-void agent(struct ignite_params* params, /*to control*/ DVFS& dvfs, /*to monitor*/ Collector& collector, std::atomic<bool>& sigterm) {
+void agent(struct ignito_params* params, /*to control*/ DVFS& dvfs, /*to monitor*/ Collector& collector, std::atomic<bool>& sigterm) {
     pin_current({1}); // silver core for agent
     const std::size_t control_ms = 250; // ms
     const int up_cpu_idx = 11; const int down_cpu_idx = 8;
@@ -83,7 +83,7 @@ int main(int argc, char **argv) {
     std::iostream::sync_with_stdio(false);
     cmdline::parser cmdParser;
     pid_t pid = getpid();
-    ignite_params _params;
+    ignito_params _params;
 
     // arg parser: BASIC
     cmdParser.add<string>("vocab", 'v', "specify mllm tokenizer model path", false, "../vocab/qwen3_vocab.mllm");
@@ -109,7 +109,7 @@ int main(int argc, char **argv) {
     cmdParser.add<int>("cpu", 'c', "specify starting CPU clock index for CPU DVFS", true, 0);
     cmdParser.add<int>("ram", 'r', "specify starting RAM clock index for RAM DVFS", true, 0);
 
-    // arg parser: For IGNITE techniques
+    // arg parser: For lazy ignition techniques
     /* Unit [ms] */
     cmdParser.add<int>("phase-pause", 'p', "specify a pause time between phases (ms)", true, 0);
     cmdParser.add<int>("token-pause", 'P', "specify a pause time between generation tokens (ms)", false, 0);
@@ -166,7 +166,7 @@ int main(int argc, char **argv) {
         _params.model_billion, RoPEType::HFHUBROPE);
     auto model = QWen3ForCausalLM(config);
     model.load(_params.model_path);
-    model.init_ignite_params(_params);  // for this, must turn on "IGNITE_USE_SYSTEM" option when building MLLM
+    model.init_ignito_params(_params);  // for this, must turn on "IGNITO_USE_SYSTEM" option when building MLLM
                                         // see scripts/build.sh
     Module::thread_sleep = _params.layer_pause; // set layer-pause time
 

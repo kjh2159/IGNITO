@@ -113,7 +113,7 @@ std::string apply_sudo_and_get(std::string command = "") {
 }
 // -------------------------------------------
 
-const bool init_ignite_filename(ignite_params& _ip){
+const bool init_ignito_filename(ignito_params& _ip){
     // variable initialization: For File Naming
     bool fixed_config = (_ip.cpu_clk_idx_p == _ip.cpu_clk_idx_d) && (_ip.ram_clk_idx_p == _ip.ram_clk_idx_d);
     bool tp = (_ip.token_pause > 0);

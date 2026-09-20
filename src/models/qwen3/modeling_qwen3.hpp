@@ -194,9 +194,10 @@ public:
 
     std::vector<Tensor> Forward(std::vector<Tensor> inputs, std::vector<std::any> args) override {
         auto x = inputs[0];
+        // collect inference speed at the moment
         params.prefill_phase = (inputs[0].sequence() > 1);
-        if (inference_times_.size() == 0) { params.prefill_speed = 12.0; }
-        else if (inference_times_.size() == 1) { params.prefill_speed = inputs[0].sequence() / inference_times_[0];
+        // this collection is valid for each independent turn.
+        if (inference_times_.size() <= 1) { params.prefill_speed = inputs[0].sequence() / inference_times_[0];
         } else { params.decode_speed = 1000 / inference_times_[inference_times_.size() - 1]; }
         
         for (auto &block : blocks) { 

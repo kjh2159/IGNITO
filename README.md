@@ -19,7 +19,7 @@ Inference-Governing Nested lazy Ignition Thermal Organizer
 - Plain C/C++ implementation without dependencies
 - Supported: ARM NEON, x86 AVX2, etc
 - Various quantization schemes
-- *IGNITO* supports a *IGNITE* module and it contains
+- *IGNITO* supports a lazy ignition module and it contains
   - Phase-level DVFS control (CPU/RAM)
   - Phase-level pause injection
   - Layer-level pause injection
@@ -55,7 +55,7 @@ Inference-Governing Nested lazy Ignition Thermal Organizer
 <details>
   <summary><strong>Language models</strong></summary>
 
-| Model                                                                       | CPU <br> FP32 | CPU <br> INT4  | *IGNITE* |
+| Model                                                                       | CPU <br> FP32 | CPU <br> INT4  | *IGNITO* |
 |-----------------------------------------------------------------------------|---------------|----------------|----------|
 | [LLaMA3.2 1B](https://github.com/meta-llama/llama3) | [✔️](https://huggingface.co/mllmTeam/llama-3.2-1b-mllm/tree/main)  | [✔️](https://huggingface.co/mllmTeam/llama-3.2-1b-mllm/tree/main)   | ⭕ |
 | [LLaMA3.2 3B](https://github.com/meta-llama/llama3) | [✔️](https://huggingface.co/mllmTeam/llama-3.2-3b-mllm/tree/main)  | [✔️](https://huggingface.co/mllmTeam/llama-3.2-3b-mllm/tree/main) | ⭕ |
@@ -66,7 +66,7 @@ Inference-Governing Nested lazy Ignition Thermal Organizer
 | [Qwen3 0.6B](https://github.com/QwenLM/Qwen3) | [✔️](https://huggingface.co/mllmTeam/qwen-3-0.6b-mllm/tree/main)  | [✔️](https://huggingface.co/mllmTeam/qwen-3-0.6b-mllm/tree/main) | ⭕ |
 | [Qwen3 1.7B](https://github.com/QwenLM/Qwen3) | [✔️](https://huggingface.co/kjh2159/Qwen3-1.7B-MLLM/tree/main)  | [✔️](https://huggingface.co/kjh2159/Qwen3-1.7B-MLLM/tree/main) | ⭕ |
 
-> For other models, please refer to the following two hugging face repositories (extension type is .mllm): [mllm](https://huggingface.co/mllmTeam/models) and [*IGNITE*](https://huggingface.co/kjh2159/models/). <br>
+> For other models, please refer to the following two hugging face repositories (extension type is .mllm): [mllm](https://huggingface.co/mllmTeam/models) and [*IGNITO*](https://huggingface.co/kjh2159/models/). <br>
 > For Qwen3 family, it supports seamless thinking mode, which is possible to toggle through the `enable` option.
 </details>
 
@@ -83,7 +83,7 @@ Inference-Governing Nested lazy Ignition Thermal Organizer
 | Galaxy Z Fold 7  | armv8  | Snapdragon 8 Elite | Android |❌        |❌       |
 | Our workstation* | amd64  | Intel              | Linux   |-         |-       |
 
-> \* Linux device (our workstation) is tested for only response generation not ignite. <br>
+> \* Linux device (our workstation) is tested for only text generation not lazy ignition. <br>
 > ⚠️ **Galaxy S25** might not accept rooting depending on device firmware version (over Bit/SW Rev. vale 7) <br>
 > ⚠️ **Z Fold 7** does not accept rooting. <br>
 > ⚠️ Basically, the target mobile devices might not support RAM DVFS.
@@ -186,11 +186,11 @@ sh scripts-termux/run.sh
 # or -->
 ```bash
 cd ..
-chmod +x scripts-termux/ignite-qwen.sh
-su -c "sh scripts-termux/ignite-qwen.sh 10 10 6 6" # to control cpu core allocation
+chmod +x scripts-termux/ignito-qwen.sh
+su -c "sh scripts-termux/ignito-qwen.sh 10 10 6 6" # to control cpu core allocation
 
 # or
-# su -c "taskset f0 sh scripts-termux/ignite-qwen.sh 10 10 6 6" # to control cpu core allocation
+# su -c "taskset f0 sh scripts-termux/ignito-qwen.sh 10 10 6 6" # to control cpu core allocation
 ```
 
 ## 🛰️ Utils
@@ -260,7 +260,7 @@ The full framework would be revealed after paper acceptance.
 
 ## ✨ Acknowledgments
 
-*IGNITE* project reuses the base kernels and implementation of [mllm](https://github.com/UbiquitousLearning/mllm).
+*IGNITO* project reuses the base kernels and implementation of [mllm](https://github.com/UbiquitousLearning/mllm).
 Also, mllm reuses many low-level kernel implementation from [ggml](https://github.com/ggerganov/ggml) on ARM CPU.
 It also utilizes [stb](https://github.com/nothings/stb) and [wenet](https://github.com/wenet-e2e/wenet) for
 pre-processing images and audios.
